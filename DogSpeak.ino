@@ -2,6 +2,11 @@
  * Tutorial pages:
  * https://arduinogetstarted.com/tutorials/arduino-button-debounce
  * https://www.arduino.cc/en/Tutorial/WebClient
+ * 
+ * Documentations:
+ * https://www.arduino.cc/en/Main/ArduinoEthernetShieldV1
+ * https://www.arduino.cc/en/uploads/Main/arduino-ethernet-shield-06-schematic.pdf
+ * https://www.sparkfun.com/datasheets/DevTools/Arduino/W5100_Datasheet_v1_1_6.pdf
  */
 
 #include <SPI.h>
@@ -31,43 +36,61 @@ int lastStateOfPoop = LOW;
 int lastStateOfCare = LOW;
 int lastStateOfSleep = LOW;
 
-void setup()
+void CheckEthernetHardwarePresence()
 {
-  // Initialize serial communication at 9600 bits per second:
-  Serial.begin(9600);
-  while(!Serial);
+  if (Ethernet.hardwareStatus() == EthernetNoHardware)
+  {
+    Serial.println("Ethernet shield was not found. Sorry, can't run without hardware.");
+    while (true)
+    {
+      delay(1); // Do nothing, no point running without Ethernet hardware
+    }
+  }
+}
 
-  // Start the Ethernet connection:
-  Serial.println("Initialize Ethernet with DHCP:");
+void CheckLinkStatus()
+{
+  byte linkStatus = Ethernet.linkStatus();
+  if (linkStatus == Unknown)
+  {
+    Serial.println("Link status unknown. Link status detection is only available with W5200 and W5500.");
+  }
+  else if (linkStatus == LinkON)
+  {
+    Serial.println("Link status: On");
+  }
+  else if (linkStatus == LinkOFF)
+  {
+    Serial.println("Link status: Off. Plug in Ethernet cable.");
+  }
+}
+
+void PrintIpAddress()
+{
+  Serial.print("Using IP address: ");
+  Serial.println(Ethernet.localIP());
+}
+
+void InitializeEthernet()
+{
+  Serial.println("Trying to initialize Ethernet with DHCP...");
   if (Ethernet.begin(mac) == 0)
   {
     Serial.println("Failed to configure Ethernet using DHCP");
-    // Check for Ethernet hardware present
-    if (Ethernet.hardwareStatus() == EthernetNoHardware)
-    {
-      Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
-      while (true)
-      {
-        delay(1); // Do nothing, no point running without Ethernet hardware
-      }
-    }
-    if (Ethernet.linkStatus() == LinkOFF)
-    {
-      Serial.println("Ethernet cable is not connected.");
-    }
-    // Try to congifure using IP address instead of DHCP:
+    CheckEthernetHardwarePresence();
+    CheckLinkStatus();
     Ethernet.begin(mac, ip);
-    Serial.print("Using IP address: ");
-    Serial.println(Ethernet.localIP());
   }
-  else
-  {
-    Serial.print("DHCP assigned IP: ");
-    Serial.println(Ethernet.localIP());
-  }
+  PrintIpAddress();
+}
+
+void setup()
+{
+  Serial.begin(9600);
+  while(!Serial);
+
+  InitializeEthernet();
   
-  // Initialize the pushbutton pin as an pull-up input
-  // the pull-up input pin will be HIGH when the switch is open and LOW when the switch is closed.
   pinMode(WALK_BUTTON_PIN, INPUT_PULLUP);
   pinMode(HUNGRY_BUTTON_PIN, INPUT_PULLUP);
   pinMode(THIRSTY_BUTTON_PIN, INPUT_PULLUP);
@@ -80,7 +103,6 @@ void setup()
 
 void sendUrlRequest(const char* request)
 {
-  // If you get a connection, report back via serial:
   IPAddress server(192,168,1,105);
   if (client.connect(server, 44358))
   {
@@ -95,10 +117,16 @@ void sendUrlRequest(const char* request)
   }
   else
   {
-    // If you didn't get a connection to the server:
     Serial.print("Connection failed to: ");
-    Serial.println(client.remoteIP());
+    Serial.println(server);
   }
+}
+
+void WriteToSerialButtonState(byte pinToRead, boolean pressed)
+{
+  Serial.print("The button (");
+  Serial.print(pinToRead);
+  Serial.println(pressed ? ") is pressed." : ") is released.");
 }
 
 void readPin(byte pinToRead, int* lastState, char* request)
@@ -107,12 +135,12 @@ void readPin(byte pinToRead, int* lastState, char* request)
   int currentState = digitalRead(pinToRead);
   if (*lastState == HIGH && currentState == LOW)
   {
-    Serial.println("The button is pressed");
+    WriteToSerialButtonState(pinToRead, true);
     sendUrlRequest(request);
   }
   else if(*lastState == LOW && currentState == HIGH)
   {
-    Serial.println("The button is released");
+    WriteToSerialButtonState(pinToRead, false);
   }
   *lastState = currentState;
 }
