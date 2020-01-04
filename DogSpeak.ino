@@ -91,6 +91,8 @@ void setup()
 
   InitializeEthernet();
   
+  // Initialize the push-button pins as pull-up inputs.
+  // The pull-up input pin will be HIGH when the switch is open and LOW when the switch is closed.
   pinMode(WALK_BUTTON_PIN, INPUT_PULLUP);
   pinMode(HUNGRY_BUTTON_PIN, INPUT_PULLUP);
   pinMode(THIRSTY_BUTTON_PIN, INPUT_PULLUP);

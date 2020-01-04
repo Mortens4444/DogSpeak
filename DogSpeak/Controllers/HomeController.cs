@@ -63,8 +63,7 @@ namespace DogSpeak.Controllers
 		private IActionResult PlaySound(string path)
 		{
 			soundPlayer.Play(path);
-			return View();
-			return new EmptyResult();
+			return View("Index");
 		}
 	}
 }
