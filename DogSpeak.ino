@@ -120,13 +120,13 @@ void readPin(byte pinToRead, int* lastState, char* request)
 void loop()
 {
   readPin(WALK_BUTTON_PIN, &lastStateOfWalk, (char*)"GET /Home/LetsGoForAWalk HTTP/1.1");
-  readPin(HUNGRY_BUTTON_PIN, &lastStateOfWalk, (char*)"GET /Home/ImHungry HTTP/1.1");
-  readPin(THIRSTY_BUTTON_PIN, &lastStateOfWalk, (char*)"GET /Home/ImThirsty HTTP/1.1");
-  readPin(PLAY_BUTTON_PIN, &lastStateOfWalk, (char*)"GET /Home/IWantToPlay HTTP/1.1");
-  readPin(PEE_BUTTON_PIN, &lastStateOfWalk, (char*)"GET /Home/INeedToPee HTTP/1.1");
-  readPin(POOP_BUTTON_PIN, &lastStateOfWalk, (char*)"GET /Home/INeedToPoop HTTP/1.1");
-  readPin(CARE_BUTTON_PIN, &lastStateOfWalk, (char*)"GET /Home/INeedCare HTTP/1.1");
-  readPin(SLEEP_BUTTON_PIN, &lastStateOfWalk, (char*)"GET /Home/SleepyDog HTTP/1.1");
+  readPin(HUNGRY_BUTTON_PIN, &lastStateOfHungry, (char*)"GET /Home/ImHungry HTTP/1.1");
+  readPin(THIRSTY_BUTTON_PIN, &lastStateOfThirsty, (char*)"GET /Home/ImThirsty HTTP/1.1");
+  readPin(PLAY_BUTTON_PIN, &lastStateOfPlay, (char*)"GET /Home/IWantToPlay HTTP/1.1");
+  readPin(PEE_BUTTON_PIN, &lastStateOfPee, (char*)"GET /Home/INeedToPee HTTP/1.1");
+  readPin(POOP_BUTTON_PIN, &lastStateOfPoop, (char*)"GET /Home/INeedToPoop HTTP/1.1");
+  readPin(CARE_BUTTON_PIN, &lastStateOfCare, (char*)"GET /Home/INeedCare HTTP/1.1");
+  readPin(SLEEP_BUTTON_PIN, &lastStateOfSleep, (char*)"GET /Home/SleepyDog HTTP/1.1");
 
   delay(200);
 }
