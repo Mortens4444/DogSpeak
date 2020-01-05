@@ -5,6 +5,9 @@
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 IPAddress ip(192, 168, 1, 177);
+IPAddress dns(192, 168, 0, 1);
+IPAddress gateway(192, 168, 0, 1);
+IPAddress subnet(255, 255, 255, 0);
 IPAddress server(192, 168, 1, 105);
 int serverServicePort = 44358;
 
@@ -53,7 +56,7 @@ void EthernetUtils::InitializeEthernet()
     Serial.println("Failed to configure Ethernet using DHCP");
     CheckEthernetHardwarePresence();
     CheckLinkStatus();
-    Ethernet.begin(mac, ip);
+    Ethernet.begin(mac, ip, dns, gateway, subnet);
   }
   PrintIpAddress();
 }

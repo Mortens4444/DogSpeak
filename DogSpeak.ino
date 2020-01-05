@@ -7,6 +7,7 @@
  * https://www.arduino.cc/en/Main/ArduinoEthernetShieldV1
  * https://www.arduino.cc/en/uploads/Main/arduino-ethernet-shield-06-schematic.pdf
  * https://www.sparkfun.com/datasheets/DevTools/Arduino/W5100_Datasheet_v1_1_6.pdf
+ * https://subscription.packtpub.com/book/hardware_and_creative/9781785285486/1/ch01lvl1sec12/finding-the-mac-address-and-obtaining-a-valid-ip-address
  */
 
 #include "Constants.h"
